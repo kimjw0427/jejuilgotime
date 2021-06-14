@@ -1,6 +1,8 @@
 # coding=<utf-8>
 import requests
 from bs4 import BeautifulSoup
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 time_range = ['08:10~09:00','09:10~10:00','10:10~11:00','11:10~12:00 ','11:10~12:00','13:00~13:50','14:00~14:50','15:00~15:50']
 classroom = 2
@@ -29,6 +31,7 @@ for i in title:
             mon = '0'+str(temp_mon)
     dict[num] = url_code
     print(f'{num}. {url_title}')
+    mainWindow.time_list.addItem(f'{num}. {url_title}')
     num += 1
 
 print('\n======================================================\n')
@@ -51,12 +54,55 @@ def crawling(url_num):
                 else:
                     print(f'{tr.replace(" ","")} {doc_html[cl + classroom].text}\n')
 
-while(True):
-    date = int(input('번호 / 0 = Exit: '))
-    if date == '0':
-        break
-    elif date > len(dict) or date < 0:
-        print('\n잘못된 번호입니다.\n')
-    else:
-        crawling(dict[date])
-print('\n끝\n')
+class Ui_mainWindow(object):
+    def setupUi(self, mainWindow):
+        mainWindow.setObjectName("mainWindow")
+        mainWindow.resize(481, 257)
+        self.centralwidget = QtWidgets.QWidget(mainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.start_button = QtWidgets.QPushButton(self.centralwidget)
+        self.start_button.setGeometry(QtCore.QRect(170, 10, 81, 51))
+        self.start_button.setObjectName("start_button")
+        self.time_list = QtWidgets.QListWidget(self.centralwidget)
+        self.time_list.setGeometry(QtCore.QRect(0, 0, 161, 211))
+        self.time_list.setObjectName("time_list")
+        self.subject_list = QtWidgets.QLabel(self.centralwidget)
+        self.subject_list.setGeometry(QtCore.QRect(170, 60, 291, 151))
+        self.subject_list.setText("")
+        self.subject_list.setObjectName("subject_list")
+        mainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(mainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 481, 21))
+        self.menubar.setObjectName("menubar")
+        mainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(mainWindow)
+        self.statusbar.setObjectName("statusbar")
+        mainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(mainWindow)
+        QtCore.QMetaObject.connectSlotsByName(mainWindow)
+
+    def retranslateUi(self, mainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        mainWindow.setWindowTitle(_translate("mainWindow", "제주일고 시간표 보기"))
+        self.start_button.setText(_translate("mainWindow", "시간표 보기"))
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    mainWindow = QtWidgets.QMainWindow()
+    ui = Ui_mainWindow()
+    ui.setupUi(mainWindow)
+    mainWindow.show()
+    sys.exit(app.exec_())
+
+#while(True):
+#    date = int(input('번호 / 0 = Exit: '))
+#    if date == '0':
+#        break
+#    elif date > len(dict) or date < 0:
+#        print('\n잘못된 번호입니다.\n')
+#    else:
+#        crawling(dict[date])
+#print('\n끝\n')
+
